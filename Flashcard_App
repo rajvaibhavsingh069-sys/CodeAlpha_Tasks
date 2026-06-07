@@ -1,0 +1,512 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: FlashcardScreen());
+  }
+}
+
+class FlashcardApp {
+  String question;
+  String answer;
+
+  FlashcardApp({required this.question, required this.answer});
+}
+
+class FlashcardScreen extends StatefulWidget {
+  const FlashcardScreen({super.key});
+
+  @override
+  State<FlashcardScreen> createState() => _FlashcardAppScreenState();
+}
+
+class _FlashcardAppScreenState extends State<FlashcardScreen> {
+  List<FlashcardApp> flashcards = [
+    FlashcardApp(
+      question: "Who is the PM of INDIA?",
+      answer: "Nrendra Modi",
+    ),
+
+    FlashcardApp(
+      question: "Which Continent is the hortest in the world?",
+      answer: "Africa",
+    ),
+    FlashcardApp(question: "Who is inventor of zero?", answer: "Aryabhatta"),
+  ];
+
+  int currentIndex = 0;
+  bool showAnswer = false;
+
+  TextEditingController questionController = TextEditingController();
+
+  TextEditingController answerController = TextEditingController();
+  nextcard() {
+    if (currentIndex < flashcards.length - 1) {
+      setState(() {
+        currentIndex++;
+      });
+    }
+  }
+
+  previousCard() {
+    if (currentIndex > 0) {
+      setState(() {
+        currentIndex--;
+      });
+    }
+  }
+
+  addFlashcard() {
+    questionController.clear();
+    answerController.clear();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+
+          title: const Text(
+            "Add Flashcard",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: questionController,
+
+                decoration: InputDecoration(
+                  labelText: "Question",
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              TextField(
+                controller: answerController,
+
+                decoration: InputDecoration(
+                  labelText: "Answer",
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+
+              child: const Text("Cancel"),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                if (questionController.text.isNotEmpty &&
+                    answerController.text.isNotEmpty) {
+                  setState(() {
+                    flashcards.add(
+                      FlashcardApp(
+                        question: questionController.text,
+                        answer: answerController.text,
+                      ),
+                    );
+                  });
+
+                  Navigator.pop(context);
+                }
+              },
+
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo),
+
+              child: const Text("Add", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void editFlashcard() {
+    questionController.text = flashcards[currentIndex].question;
+
+    answerController.text = flashcards[currentIndex].answer;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+
+          title: const Text(
+            "Edit Flashcard",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: questionController,
+
+                decoration: InputDecoration(
+                  labelText: "Question",
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              TextField(
+                controller: answerController,
+
+                decoration: InputDecoration(
+                  labelText: "Answer",
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+
+              child: const Text("Cancel"),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  flashcards[currentIndex].question = questionController.text;
+
+                  flashcards[currentIndex].answer = answerController.text;
+                });
+
+                Navigator.pop(context);
+              },
+
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo),
+
+              child: const Text("Save", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void deleteFlashcard() {
+    if (flashcards.isEmpty) return;
+
+    setState(() {
+      flashcards.removeAt(currentIndex);
+
+      if (currentIndex > 0) {
+        currentIndex--;
+      }
+
+      showAnswer = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xffEEF2FF),
+
+      appBar: AppBar(
+        title: const Text(
+          "Flashcard Quiz App :)",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 13, 21, 66),
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: addFlashcard,
+
+        backgroundColor: Colors.indigo,
+
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+
+      body: flashcards.isEmpty
+          ? const Center(
+              child: Text(
+                "No More Questions",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(20),
+
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(30),
+
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color.fromARGB(255, 2, 10, 50),
+                          const Color.fromARGB(255, 71, 157, 227),
+                        ],
+                      ),
+
+                      borderRadius: BorderRadius.circular(25),
+
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+
+                    child: Column(
+                      children: [
+                        const Icon(Icons.quiz, size: 55, color: Colors.white),
+
+                        const SizedBox(height: 20),
+
+                        Text(
+                          flashcards[currentIndex].question,
+
+                          style: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+
+                          textAlign: TextAlign.center,
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        if (showAnswer)
+                          Container(
+                            padding: const EdgeInsets.all(15),
+
+                            decoration: BoxDecoration(
+                              color: Colors.white24,
+
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+
+                            child: Text(
+                              flashcards[currentIndex].answer,
+
+                              style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 35),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 55,
+
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          showAnswer = !showAnswer;
+                        });
+                      },
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 44, 86, 200),
+
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+
+                      child: Text(
+                        showAnswer ? "Hide Answer" : "Show Answer",
+
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: previousCard,
+
+                          icon: Icon(Icons.arrow_back),
+
+                          label: Text("Previous"),
+
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              167,
+                              228,
+                              242,
+                            ),
+
+                            foregroundColor: const Color.fromARGB(
+                              255,
+                              67,
+                              85,
+                              189,
+                            ),
+
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 15),
+
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: nextcard,
+
+                          icon: const Icon(Icons.arrow_forward),
+
+                          label: const Text("Next"),
+
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              97,
+                              184,
+                              57,
+                            ),
+
+                            foregroundColor: Colors.white,
+
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 25),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: editFlashcard,
+
+                          icon: const Icon(Icons.edit),
+
+                          label: const Text("Edit"),
+
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              158,
+                              113,
+                              45,
+                            ),
+
+                            foregroundColor: Colors.white,
+
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 15),
+
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: deleteFlashcard,
+
+                          icon: const Icon(Icons.delete),
+
+                          label: const Text("Delete"),
+
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              243,
+                              77,
+                              65,
+                            ),
+
+                            foregroundColor: Colors.white,
+
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+    );
+  }
+}
