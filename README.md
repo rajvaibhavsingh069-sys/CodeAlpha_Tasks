@@ -77,3 +77,30 @@ flutter run
 
 MIT License
 
+# 3. Fitness Tracking App
+
+A Flutter and Dart app for manually tracking daily fitness activity such as steps, workouts, calories burned, and active minutes.
+
+## Features
+
+* Daily dashboard for steps, calories, workouts, and active minutes
+* Manual activity logging with exercise type, date, steps, calories, notes, and workout duration
+* Daily goal progress bars
+* Weekly active-minutes chart
+* Recent activity history with delete support
+* Local on-device storage using shared_preferences
+
+## Tech Stack
+
+* Flutter
+* Dart
+* shared_preferences
+
+## Run Locally
+
+```bash
+cd CodeAlpha_Fitness_Tracker_App
+flutter pub get
+flutter run
+```
+
