@@ -45,3 +45,35 @@ flutter run
 ## License
 
 This project is licensed under the MIT License.
+
+# 2.Quote Generator App ✨
+
+A simple Flutter app that displays random inspirational quotes at the press of a button.
+
+## Features
+
+* 🎲 Random quote generation
+* 👤 Displays quote author
+* 🎨 Clean and minimal UI
+* ⚡ Built with Flutter & Dart
+
+## Tech Stack
+
+* Flutter
+* Dart
+
+## Run Locally
+
+```bash
+flutter pub get
+flutter run
+```
+
+## Screenshot
+
+*Add a screenshot here.*
+
+## License
+
+MIT License
+
